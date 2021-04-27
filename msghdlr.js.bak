@@ -1054,14 +1054,11 @@ module.exports = msgHdlr = async (client , mek) => {
 				case 'ping':
            		 await client.sendMessage(from, `Pong!!!!\nSpeed: ${processTime(time, moment())} _Second_`)
 					break
-               case 'help': 
-				case 'menu':
-
-				    const reqXp  = 5000 * (Math.pow(2, getLevelingLevel(sender)) - 1)
-				    const uangku = checkATMuser(sender)
-					const pepolu = JSON.parse(fs.readFileSync('./database/bot/totalcmd.json'))[0].totalcmd
-					await costum(ind.menu(pushname, prefix, getLevelingLevel, getLevelingXp, sender, reqXp, _registered, uangku, role, client, process , pepolu, groupMetadata, groupAdmins, isGroup, isGroupAdmins, isLevelingOn, isWelkom, isOwner, isAntiLink, isBadWord), text, tescuk, cr)
-					break
+               case 'menu':
+					if (!isGroup) return reply(mess.only.group)
+					client.sendMessage(from, menu(prefix, pushname, sender), text, {quoted: mek})
+				    contextInfo: { mentionedJid: [sender] }
+				    break
 				case 'info':
 					me = client.user
 					uptime = process.uptime()
