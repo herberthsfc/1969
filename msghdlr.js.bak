@@ -509,8 +509,7 @@ module.exports = msgHdlr = async (client , mek) => {
   	          } catch (err) {
    	             console.error(err)
    	         }
-	        }
-	
+   	         
 			 //feature total command
 			 if (isCmd) cmdadd()
            	
