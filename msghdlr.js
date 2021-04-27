@@ -572,7 +572,67 @@ module.exports = msgHdlr = async (client , mek) => {
 					buper = await getBuffer(nganu.result)
 					client.sendMessage(from, buper, image, {quoted: mek})
 					await limitAdd(sender)
-				break		
+				break
+                case 'casal':
+					if (!isGroup) return reply(ind.groupo())
+					jds = []
+					const jdii = groupMembers
+					const koss = groupMembers
+					const akuu = jdii[Math.floor(Math.random() * jdii.length)]
+					const diaa = koss[Math.floor(Math.random() * koss.length)]
+					teks = `*✾─❰ _NOVO CASAL DO GP_ ❱─✾*\n_Pense num casal apaixonado!!😍🤣_\n\n◐❯─┨♡ 👇 👇 ♡┠─❮◑\n@${akuu.jid.split('@')[0]} ❤️ @${diaa.jid.split('@')[0]} \n\n_Felicidades, e usem preservativos!🤰_`
+					jds.push(akuu.jid)
+					jds.push(diaa.jid)
+					mentions(teks, jds, true)
+					break
+			    case 'cassino':
+                    let cassinao = ['🥥','🍒','🍉']
+                    let resposta1 = cassinao[Math.floor(Math.random() * cassinao.length)]
+                    let resposta2 = cassinao[Math.floor(Math.random() * cassinao.length)]
+                    let resposta3 = cassinao[Math.floor(Math.random() * cassinao.length)]
+                    if(resposta1==resposta2&&resposta2==resposta3){
+                    client.sendMessage(from, `*💰-❮ _CASSINO HDBOT_ ❯-💰*\n_Bem vindo(a) Lindo(a)_\n\n┠➠ ${resposta1} - ${resposta2} - ${resposta3} \n\n *BOOA, ${pushname} VOCÊ GANHOU! AGORA PODE ME MAMAR!*`, text, {quoted: mek})
+                    }
+                    else if(resposta1==resposta2||resposta2==resposta3){
+                    client.sendMessage(from, `*💰-❮ _CASSINO HDBOT_ ❯-💰*\n_Bem vindo(a) Lindo(a)_\n\n┠➠ ${resposta1} - ${resposta2} - ${resposta3} \n\n *Poxa, ${pushname} Não foi dessa vez...*`, text, {quoted: mek})
+                    }
+                    else{
+                    client.sendMessage(from, `*💰-❮ _CASSINO HDBOT_ ❯-💰*\n_Bem vindo(a) Lindo(a)_\n\n┠➠ ${resposta1} - ${resposta2} - ${resposta3} \n\n *Quase, ${pushname} Tente outra vez...*`, text, {quoted: mek})
+                    }
+                    break
+		        case 'gados':
+					if (!isGroup) return reply(ind.groupo())
+					jds = []
+					const jdiii = groupMembers
+					const kosss = groupMembers
+                    const qua = groupMembers
+					const lindy = groupMembers
+					const cinco = groupMembers
+					const akuuu = jdiii[Math.floor(Math.random() * jdiii.length)]
+					const diaaa = kosss[Math.floor(Math.random() * kosss.length)]
+					const quatro = qua[Math.floor(Math.random() * qua.length)]
+					const troot = lindy[Math.floor(Math.random() * lindy.length)]	
+					const cincor = cinco[Math.floor(Math.random() * cinco.length)]										
+					teks = `✾❯──❰ *RANKING* ❱──❮✾\n╔════•⊱✦⊰•════╗\n_Os 5 mais gados do grupo_\n╚════•⊱✦⊰•════╝\n┌──────────────\n🥇├ @${akuuu.jid.split('@')[0]}\n🥈├ @${diaaa.jid.split('@')[0]}\n🥉├ @${quatro.jid.split('@')[0]}\n🏅├ @${troot.jid.split('@')[0]}\n🏅├ @${cincor.jid.split('@')[0]}\n└──────────────\n\n *_HDBOT.exe_* ⚡`
+					jds.push(akuuu.jid)
+					jds.push(diaaa.jid)
+					jds.push(quatro.jid)
+					jds.push(troot.jid)		
+					jds.push(cincor.jid)										
+					mentions(teks, jds, true)
+					break
+                case 'tapa':
+            if (!isGroup) return reply(ind.groupo())
+            reply('*Preparando a mão...*') 
+            fs.readdir('./tapa/', async (err, files) => {
+            let imagens = files.filter(f => f.split('.').pop() == 'jpg')
+            let imagem = imagens[Math.floor(Math.random() * imagens.length)]
+            dua = fs.readFileSync(`./tapa/${imagem}`)
+            var mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
+            if(!mentioned||mentioned.length < 1||mentioned.length > 1) return client.sendMessage(from, 'Você precisa marcar alguém para esse comando', text, {quoted: mek})
+            client.sendMessage(from, dua, image, {mimetype: Mimetype.jpg, caption: `*${pushname}* deu um tapa no(a) ${body.split(' ').slice(1).join(' ')} 👋`,quoted: mek, contextInfo: {"mentionedJid": mentioned}})
+            })
+            break
 				case 'ttp': 
 					pngttp = './tmp/ttp.png'
 					webpng = './tmp/ttp.webp'
