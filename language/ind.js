@@ -1,11 +1,11 @@
 const a = '```'
 
 exports.wait = () => {
-	return`*「 WAIT 」 SEDANG PROSES*`
+	return`*⏳ Carregando...*`
 }
 
 exports.succes = () => {
-	return`*「 SUCCES 」*`
+	return`*✔️ Sucesso*`
 }
 
 exports.lvlon = () => {
