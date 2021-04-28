@@ -23,11 +23,16 @@ const imageToBase64 = require('image-to-base64')
 const axios = require('axios')
 const { color, bgcolor } = require('./lib/color')
 const { menu } = require('./lib/menu')
+const { menuadmin } = require('./lib/menuadmin')
+const { menupremium } = require('./lib/menupremium')
+const { serpremium } = require('./lib/serpremium')
 const { donasi } = require('./lib/donasi')
 const { fetchJson } = require('./lib/fetcher')
 const { recognize } = require('./lib/ocr')
+const { nad } = require('./language')
 const { exec, spawn } = require("child_process")
 const { wait, simih, getBuffer, h2k, generateMessageID, getGroupAdmins, getRandom, banner, start, info, success, close } = require('./lib/functions')
+const premium = JSON.parse(fs.readFileSync('./database/user/premium.json'))
 const tiktod = require('tiktok-scraper')
 const brainly = require('brainly-scraper')
 const ffmpeg = require('fluent-ffmpeg')
@@ -228,6 +233,7 @@ module.exports = msgHdlr = async (client , mek) => {
 			const isOwner = ownerNumber.includes(sender)
 			const isAfkOn = checkAfkUser(sender)
 			const isAntiLink = isGroup ? antilink.includes(from) : false
+            const isPrem = premium.includes(sender)
 			const isImage = type === 'imageMessage'
 			const isUrl = (url) => {
 			    return url.match(new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/, 'gi'))
@@ -532,7 +538,53 @@ module.exports = msgHdlr = async (client , mek) => {
 			if (!isCmd && isGroup) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;31mRECV\x1b[1;37m]', time, color('Message'), 'from', color(sender.split('@')[0]), 'in', color(groupName), 'args :', color(args.length))
 			
 			switch(command) { 
-				//apivinz 
+				//inicio
+                case 'menu':
+		        if (!isGroup) return reply(mess.only.group)
+		        client.sendMessage(from, menu(prefix, pushname, sender), text, {quoted: mek})
+				contextInfo: { mentionedJid: [sender] }
+				break
+                case 'menuadmin':
+				if (!isGroupAdmins) return reply(mess.only.admin)
+				if (!isGroup) return reply(mess.only.group)
+		        client.sendMessage(from, menuadmin(prefix, sender), text, {quoted: mek})
+				break
+                case 'menupremium':
+		        if (!isPrem) return reply(nad.premium())
+		        client.sendMessage(from, menupremium(prefix, sender), text, {quoted: mek})
+				break
+				case 'serpremium':
+				case 'ser.premium':
+		        client.sendMessage(from, serpremium(prefix, sender), text, {quoted: mek})
+				break
+				case 'addprem':
+					if (!isOwner) return reply(nad.ownerb())
+					addp = body.slice(10)
+					premium.push(`${addp}@s.whatsapp.net`)
+					fs.writeFileSync('./database/user/premium.json', JSON.stringify(premium))
+					reply(`Sucesso adicionado ${addp} ao Premium`)
+					break
+				case 'kickprem':
+					if (!isOwner) return reply(nad.ownerb())
+					oh = body.slice(11)
+					delp = premium.indexOf(oh)
+					premium.splice(delp, 1)
+					fs.writeFileSync('./database/user/premium.json', JSON.stringify(premium))
+					reply(`Excluido com sucesso ${oh} da Lista Premium`)
+					break
+					case 'listapremium':
+					case 'premiumlist':
+					if (isBanned) return reply(nad.baned())
+					client.updatePresence(from, Presence.composing) 
+					teks = `╭─「 *USUÁRIOS PREMIUM* 」\n`
+					no = 0
+					for (let prem of premium) {
+						no += 1
+						teks += `│「${no.toString()}」 @${prem.split('@')[0]}\n`
+					}
+					teks += `│ Número de Usuarios Premium: ${premium.length}\n╰──────「 *HDBOT* 」`
+					client.sendMessage(from, teks.trim(), extendedText, {quoted: mek, contextInfo: {"mentionedJid": premium}})
+					break
 				case 'apkpure':
  				if (isLimit(sender)) return reply(ind.limitend(pusname))
 				data = await fetchJson(`https://api.zeks.xyz/api/apkpure?q=${body.slice(9)}&apikey=apivinz`, {method: 'get'})
@@ -1113,11 +1165,6 @@ module.exports = msgHdlr = async (client , mek) => {
 				case 'ping':
            		 await client.sendMessage(from, `Pong!!!!\nSpeed: ${processTime(time, moment())} _Second_`)
 					break
-               case 'menu':
-					if (!isGroup) return reply(mess.only.group)
-					client.sendMessage(from, menu(prefix, pushname, sender), text, {quoted: mek})
-				    contextInfo: { mentionedJid: [sender] }
-				    break
 				case 'info':
 					me = client.user
 					uptime = process.uptime()
@@ -1659,23 +1706,23 @@ module.exports = msgHdlr = async (client , mek) => {
 					}
 					mentions(teks, groupAdmins, true)
 					break
-				case 'welcome':
-					if (!isGroup) return reply(ind.groupo())
-					if (!isGroupAdmins) return reply(ind.admin())
-					if (args.length < 1) return reply('Boo :𝘃')
-					if (Number(args[0]) === 1) {
-						if (isWelkom) return reply('*SUDAH AKTIF* !!!')
-						welkom.push(from)
-						fs.writeFileSync('./database/bot/welkom.json', JSON.stringify(welkom))
-						reply('❬ 𝗦𝗨𝗞𝗦𝗘𝗦 ❭ mengaktifkan welcome/left di group ini ')
-					} else if (Number(args[0]) === 0) {
-						welkom.splice(from, 1)
-						fs.writeFileSync('./database/bot/welkom.json', JSON.stringify(welkom))
-						reply('❬ 𝗦𝗨𝗞𝗦𝗘𝗦 ❭  menonaktifkan welcome/left di group ini ')
-					} else {
-						reply(ind.satukos())
-					}
-					break 
+				    case 'welcome':
+                    if (!isGroup) return reply(mess.only.group)
+                    if (!isGroupAdmins) return reply(mess.only.admin)
+                    if (args.length < 1) return reply('Hmmmm')
+                    if (Number(args[0]) === 1) {
+                    if (isWelkom) return reply('Já ativo.')
+                    welkom.push(from)
+                    fs.writeFileSync('./src/welkom.json', JSON.stringify(welkom))
+                    reply('Modo de boas vindas ativo com sucesso!️')
+                    } else if (Number(args[0]) === 0) {
+                    welkom.splice(from, 1)
+                    fs.writeFileSync('./src/welkom.json', JSON.stringify(welkom))
+                    reply('Modo de boas vindas desativado com sucesso!️')
+                    } else {
+                    reply('1 para ativar, 0 para desativar')
+                    }
+                    break
 					case 'simih':
 					if (!isGroup) return reply(ind.groupo())
 					if (!isGroupAdmins) return reply(ind.admin())
