@@ -262,9 +262,6 @@ mess = {
 						setTimeout( () => {
 						client.groupRemove(from, [kic]).catch((e)=>{reply(`*ERR:* ${e}`)})
 					}, 5000)
-						setTimeout( () => {
-						client.updatePresence(from, Presence.composing)
-						reply("1detik")
 			    	}
            	
              //kolor
